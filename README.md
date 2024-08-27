@@ -13,40 +13,41 @@ archive/app-deployment.yml:        image: {repo url}/cloud-bulldozer/perfapp:lat
 
 
 # Contents of setup.txt file
-## all commands done after untaring file and staying in the same directory this readme file is located
-## copying the kube-burner-ocp to '~/'
-## note can have subdirectory under '~/' like i use 'cfworkspace'
 
-cp ./kube-burner-ocp-custom/kube-burner-ocp ~/
+-all commands done after untaring file and staying in the same directory this readme file is located
+-copying the kube-burner-ocp to '~/'
+-note can have subdirectory under '~/' like i use 'cfworkspace'
 
-## set alias to bash
-echo "alias kube-burner-ocp='~/kube-burner-ocp'" >> ~/.bash_profile
-source ~/.bash_profile
+  cp ./kube-burner-ocp-custom/kube-burner-ocp ~/
 
-## if you are good with 400 namespaces/pods set across your workernodes then no change needed
-## if you desire to change it from 400 to something else do the following.
-vi ./kube-burner-ocp-custom/node-density-heavy-cfox-v1/node-density-heavy.yml
+-set alias to bash
+  echo "alias kube-burner-ocp='~/kube-burner-ocp'" >> ~/.bash_profile
+  source ~/.bash_profile
 
-## the files edited would be the '400' in the below area for 'jobIterations'
-jobs:
-  - name: api-intensive-v1
-    jobIterations: 400
+-if you are good with 400 namespaces/pods set across your workernodes then no change needed
+-if you desire to change it from 400 to something else do the following.
+  vi ./kube-burner-ocp-custom/node-density-heavy-cfox-v1/node-density-heavy.yml
 
-## once set to run the command you can choose to let it do the default garbage collection of the namespaces at the end or have that be a seperate command.
-## the below commands sequence has the --gc disabled and then the namespace delete command done seperate (giving time to watch the api traffic stabilize)
-## to run the kube-burner-ocp command taking the custom files you have to be in the directory that houses the '*.yml' file and the 'templates' directory
+-the files edited would be the '400' in the below area for 'jobIterations'
+  jobs:
+    - name: api-intensive-v1
+      jobIterations: 400
 
-## switch to the required directory
-cd kube-burner-ocp-custom/node-density-heavy-cfox-v1/
+-once set to run the command you can choose to let it do the default garbage collection of the namespaces at the end or have that be a seperate command.
+-the below commands sequence has the --gc disabled and then the namespace delete command done seperate (giving time to watch the api traffic stabilize)
+-to run the kube-burner-ocp command taking the custom files you have to be in the directory that houses the '*.yml' file and the 'templates' directory
 
-## cluster access
-kubeconfig <cluster FQDN>
+-switch to the required directory
+  cd kube-burner-ocp-custom/node-density-heavy-cfox-v1/
 
-## command with automatic cleanup disabled
-kube-burner-ocp node-density-heavy --gc=false
+-cluster access
+  kubeconfig <cluster FQDN>
 
-## checks namespace count, it should match the value set for 'jobIterations'
-oc get projects | grep api-intensive-v1 | wc -l
+-command with automatic cleanup disabled
+  kube-burner-ocp node-density-heavy --gc=false
 
-## deletes the namespaces created
+-checks namespace count, it should match the value set for 'jobIterations'
+  oc get projects | grep api-intensive-v1 | wc -l
+
+-deletes the namespaces created
 oc delete namespace api-intensive-v1-{0..400}
