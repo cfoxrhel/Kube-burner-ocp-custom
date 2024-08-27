@@ -45,7 +45,7 @@ cd kube-burner-ocp-custom/node-density-heavy-cfox-v1/
 
 -> cluster access
   
-kubeconfig <cluster FQDN>
+kubeconfig "<cluster FQDN>"
 
 -> command with automatic cleanup disabled
   
