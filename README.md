@@ -52,7 +52,8 @@ kubeconfig {cluster FQDN}
 kube-burner-ocp node-density-heavy --gc=false
 
 -> checks namespace count, it should match the value set for 'jobIterations'
-  
+# Examples for custom workloads
+https://github.com/kube-burner/kube-burner/tree/main/examples
 oc get projects | grep api-intensive-v1 | wc -l
 
 -> deletes the namespaces created
